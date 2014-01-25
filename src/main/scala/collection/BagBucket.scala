@@ -4,10 +4,14 @@ import scala.collection
 import scala.collection.immutable.{Nil, List}
 
 
-trait BagBucket[A]
-  extends Iterable[A] {
+object BagBucket {
 
-  protected type BagBucket <: collection.BagBucket[A]
+
+}
+
+trait BagBucket[A]
+  extends Iterable[A]
+  with BagBucketLike[A, BagBucket[A]] {
 
   def sentinel: A
 
@@ -27,27 +31,9 @@ trait BagBucket[A]
     distinctIterator.map(elem => multiplicity(elem)).min
   }
 
-  def intersect(that: collection.BagBucket[A]): BagBucket
-
-  def diff(that: collection.BagBucket[A]): BagBucket
-
   def subsetOf(that: collection.BagBucket[A]): Boolean = {
     this.distinctIterator.forall(elem => this.multiplicity(elem) <= that.multiplicity(elem))
   }
-
-  def +(elem: A): BagBucket = added(elem, 1)
-
-  def +(elemCount: (A, Int)): BagBucket = added(elemCount._1, elemCount._2)
-
-  def added(elem: A, count: Int): BagBucket
-
-  def addedBucket(bucket: collection.BagBucket[A]): BagBucket
-
-  def -(elem: A): BagBucket = removed(elem, 1)
-
-  def removed(elem: A, count: Int): BagBucket
-
-  def distinct: BagBucket
 
   def distinctIterator: Iterator[A]
 }
@@ -204,3 +190,5 @@ trait ListBagBucket[A] extends BagBucket[A] {
     removedRec(list, count)
   }
 }
+
+

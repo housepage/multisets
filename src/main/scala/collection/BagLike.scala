@@ -2,7 +2,6 @@ package scala.collection
 
 
 import scala.collection.generic.{CanBuildFrom, Subtractable}
-import scala.collection.immutable.RedBlackTree
 
 
 /** A template trait for bag collections of type `Bag[A]`.
