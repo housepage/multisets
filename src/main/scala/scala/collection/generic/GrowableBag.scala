@@ -1,5 +1,7 @@
 package scala.collection.generic
 
+import scala.collection.GenBagBucket
+
 trait GrowableBag[A] extends Growable[A] {
 
   def +=(elem: A): this.type = add(elem, 1)
@@ -9,6 +11,6 @@ trait GrowableBag[A] extends Growable[A] {
 
   def add(elem: A, count: Int): this.type
 
-  def addBucket(bucket: collection.BagBucket[A]): this.type
+  def addBucket(bucket: GenBagBucket[A]): this.type
 
 }

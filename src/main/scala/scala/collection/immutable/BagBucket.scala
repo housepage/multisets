@@ -1,8 +1,7 @@
 package scala.collection.immutable
 
-import scala.collection.{mutable, immutable}
+import scala.collection.{GenBagBucket, immutable}
 import scala.collection
-import scala.annotation.tailrec
 
 trait BagBucket[A]
   extends collection.BagBucket[A]
@@ -22,10 +21,9 @@ class MultiplicityBagBucket[A](val sentinel: A, val multiplicity: Int)
       this
   }
 
-  def addedBucket(bucket: collection.BagBucket[A]): MultiplicityBagBucket[A] = {
+  def addedBucket(bucket: GenBagBucket[A]): MultiplicityBagBucket[A] = {
     new immutable.MultiplicityBagBucket[A](sentinel, this.multiplicity + bucket.multiplicity(sentinel))
   }
-
 
   override def -(elem: A): MultiplicityBagBucket[A] = {
     new MultiplicityBagBucket(sentinel, Math.max(0, multiplicity - 1))
@@ -35,10 +33,11 @@ class MultiplicityBagBucket[A](val sentinel: A, val multiplicity: Int)
     new MultiplicityBagBucket(sentinel, Math.max(0, multiplicity - count))
   }
 
-  def intersect(that: collection.BagBucket[A]): MultiplicityBagBucket[A] =
+  def intersect(that: GenBagBucket[A]): MultiplicityBagBucket[A] =
     new immutable.MultiplicityBagBucket(sentinel, Math.min(this.multiplicity, that.multiplicity(sentinel)))
 
-  def diff(that: collection.BagBucket[A]): MultiplicityBagBucket[A] =
+
+  def diff(that: GenBagBucket[A]): MultiplicityBagBucket[A] =
     new immutable.MultiplicityBagBucket(sentinel, Math.max(this.multiplicity - that.multiplicity(sentinel), 0))
 
   def distinct: MultiplicityBagBucket[A] = {
@@ -53,19 +52,19 @@ class BagOfMultiplicitiesBagBucket[A](val sentinel: A, val bag: immutable.Bag[A]
   with BagBucket[A]
   with BagBucketLike[A, BagOfMultiplicitiesBagBucket[A]] {
 
-  def intersect(that: collection.BagBucket[A]): BagOfMultiplicitiesBagBucket[A] = that match {
+  def intersect(that: GenBagBucket[A]): BagOfMultiplicitiesBagBucket[A] = that match {
     case bagBucketBag: collection.BagOfMultiplicitiesBagBucket[A] => new BagOfMultiplicitiesBagBucket(sentinel, bag intersect bagBucketBag.bag)
     case _ => new BagOfMultiplicitiesBagBucket(sentinel, bag.intersect(bag.empty ++ that))
   }
 
-  def diff(that: collection.BagBucket[A]): BagOfMultiplicitiesBagBucket[A] = that match {
+  def diff(that: GenBagBucket[A]): BagOfMultiplicitiesBagBucket[A] = that match {
     case bagBucketBag: collection.BagOfMultiplicitiesBagBucket[A] => new BagOfMultiplicitiesBagBucket(sentinel, bag diff bagBucketBag.bag)
     case _ => new BagOfMultiplicitiesBagBucket(sentinel, bag.diff(bag.empty ++ that))
   }
 
   def added(elem: A, count: Int): BagOfMultiplicitiesBagBucket[A] = new BagOfMultiplicitiesBagBucket(sentinel, bag.added(elem, count))
 
-  def addedBucket(bucket: collection.BagBucket[A]): BagOfMultiplicitiesBagBucket[A] = new BagOfMultiplicitiesBagBucket(sentinel, bag.addedBucket(bucket))
+  def addedBucket(bucket: GenBagBucket[A]): BagOfMultiplicitiesBagBucket[A] = new BagOfMultiplicitiesBagBucket(sentinel, bag.addedBucket(bucket))
 
   override def -(elem: A): BagOfMultiplicitiesBagBucket[A] = new BagOfMultiplicitiesBagBucket(sentinel, bag - elem)
 
@@ -83,17 +82,17 @@ class ListBagBucket[A](val sentinel: A, val list: List[A])
   override def toList: scala.List[A] = list
 
   def added(elem: A, count: Int): ListBagBucket[A] = {
-    if (count > 0) new immutable.ListBagBucket[A](elem, Iterator.fill(count)(elem) ++: list)
+    if (count > 0) new immutable.ListBagBucket[A](elem, list ++ Iterator.fill(count)(elem))
     else this
   }
 
-  def addedBucket(bucket: collection.BagBucket[A]): ListBagBucket[A] = {
-    new immutable.ListBagBucket[A](sentinel, bucket ++: this.list)
+  def addedBucket(bucket: GenBagBucket[A]): ListBagBucket[A] = {
+    new immutable.ListBagBucket[A](sentinel, list ++ bucket)
   }
 
-  def intersect(that: collection.BagBucket[A]): ListBagBucket[A] = new immutable.ListBagBucket[A](sentinel, list.intersect(that.toList))
+  def intersect(that: GenBagBucket[A]): ListBagBucket[A] = new immutable.ListBagBucket[A](sentinel, list.intersect(that.toList))
 
-  def diff(that: collection.BagBucket[A]): ListBagBucket[A] = new immutable.ListBagBucket[A](sentinel, list.diff(that.toList))
+  def diff(that: GenBagBucket[A]): ListBagBucket[A] = new immutable.ListBagBucket[A](sentinel, list.diff(that.toList))
 
   def removed(elem: A, count: Int): ListBagBucket[A] = new immutable.ListBagBucket[A](sentinel, removedFromList(elem, list, count))
 

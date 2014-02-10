@@ -7,7 +7,7 @@ import scala.util.hashing.Hashing
 trait BagConfiguration[A]
   extends collection.BagConfiguration[A, immutable.BagBucket[A]] {
 
-  override def bucketFrom(bucket: collection.BagBucket[A]): BagBucket[A] = bucket match {
+  override def bucketFrom(bucket: GenBagBucket[A]): BagBucket[A] = bucket match {
     case immutableBucket: immutable.BagBucket[A] => immutableBucket
     case _ => super.bucketFrom(bucket)
   }

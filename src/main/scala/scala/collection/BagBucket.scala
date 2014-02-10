@@ -1,43 +1,26 @@
-package scala.collection
+package scala
+package collection
 
-import scala.collection
-import scala.collection.immutable.{Nil, List}
+import scala.collection.immutable.{Nil, List, ::}
+import generic._
 
-
-object BagBucket {
-
-
-}
 
 trait BagBucket[A]
   extends Iterable[A]
-  with BagBucketLike[A, BagBucket[A]] {
+  with BagBucketLike[A, BagBucket[A]]
+  with GenBagBucket[A] {
 
-  def sentinel: A
+  override def companion: GenericBagBucketCompanion[BagBucket] = BagBucket
 
-  def multiplicity(elem: A): Int
-
-  def maxMultiplicity: Int = {
-    if (isEmpty)
-      throw new UnsupportedOperationException("empty.maxMultiplicity")
-
-    distinctIterator.map(elem => multiplicity(elem)).max
-  }
-
-  def minMultiplicity: Int = {
-    if (isEmpty)
-      throw new UnsupportedOperationException("empty.maxMultiplicity")
-
-    distinctIterator.map(elem => multiplicity(elem)).min
-  }
-
-  def subsetOf(that: collection.BagBucket[A]): Boolean = {
-    this.distinctIterator.forall(elem => this.multiplicity(elem) <= that.multiplicity(elem))
-  }
-
-  def distinctIterator: Iterator[A]
+  override def seq: BagBucket[A] = this
 }
 
+object BagBucket extends generic.BagBucketFactory[BagBucket] {
+  implicit def canBuildFrom[A]: CanBuildFrom[Coll, A, BagBucket[A]] = bagBucketCanBuildFrom[A]
+
+  override def empty[A]: immutable.BagBucket[A] = ??? //immutable.BagBucket.empty[A]
+  override def newBuilder[A]: mutable.BagBucketBuilder[A, BagBucket[A]] = ??? // immutable.BagBucket.newBuilder[A]
+}
 
 trait MultiplicityBagBucket[A] extends BagBucket[A] {
 
@@ -60,8 +43,7 @@ trait MultiplicityBagBucket[A] extends BagBucket[A] {
     multiplicity
   }
 
-  override def subsetOf(that: collection.BagBucket[A]): Boolean = multiplicity <= that.multiplicity(sentinel)
-
+  override def subsetOf(that: GenBagBucket[A]): Boolean = multiplicity <= that.multiplicity(sentinel)
 
   override def exists(p: (A) => Boolean): Boolean = p(sentinel)
 

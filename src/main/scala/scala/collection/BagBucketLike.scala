@@ -5,22 +5,25 @@ import scala.collection.generic.Subtractable
 
 trait BagBucketLike[A, +This <: BagBucketLike[A, This] with BagBucket[A]]
   extends IterableLike[A, This]
+  with GenBagBucketLike[A, This]
   with Subtractable[A, This] {
   self =>
 
-  /**
-   *
-   * @param that
-   * @return
-   */
-  def intersect(that: collection.BagBucket[A]): This
+  override protected[this] def newBuilder: mutable.BagBucketBuilder[A, This]
 
   /**
    *
    * @param that
    * @return
    */
-  def diff(that: collection.BagBucket[A]): This
+  def intersect(that: GenBagBucket[A]): This
+
+  /**
+   *
+   * @param that
+   * @return
+   */
+  def diff(that: GenBagBucket[A]): This
 
   /**
    *
@@ -49,7 +52,7 @@ trait BagBucketLike[A, +This <: BagBucketLike[A, This] with BagBucket[A]]
    * @param bucket
    * @return
    */
-  def addedBucket(bucket: collection.BagBucket[A]): This
+  def addedBucket(bucket: GenBagBucket[A]): This
 
   /**
    *

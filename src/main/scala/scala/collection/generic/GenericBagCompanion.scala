@@ -5,9 +5,9 @@ package generic
 import scala.language.higherKinds
 
 
-trait GenericBagCompanion[CC[X] <: collection.Bag[X], BB[X] <: collection.BagBucket[X], BC[X] <: collection.BagConfiguration[X, BB[X]]] {
+trait GenericBagCompanion[+CC[X] <: collection.Bag[X], BB[X] <: collection.BagBucket[X], BC[X] <: collection.BagConfiguration[X, BB[X]]] {
 
-  type Coll = CC[_]
+  protected[this] type Coll = CC[_]
 
 
   def newBuilder[A](implicit bagConfiguration: BC[A]): mutable.BagBuilder[A, CC[A]]
@@ -31,6 +31,5 @@ trait GenericBagCompanion[CC[X] <: collection.Bag[X], BB[X] <: collection.BagBuc
       b.result()
     }
   }
-
 
 }

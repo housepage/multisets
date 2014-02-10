@@ -1,6 +1,6 @@
 package scala.collection.mutable
 
-import scala.collection.{mutable, immutable, generic}
+import scala.collection.{GenBagBucket, mutable, immutable, generic}
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.SortedBagConfiguration._
 import scala.collection
@@ -21,7 +21,7 @@ class TreeBag[A](initialContents: immutable.TreeBag[A])(implicit protected val b
 
   def bucketsIterator: Iterator[BagBucket] = contents.bucketsIterator.map(bagConfiguration.bucketFrom(_))
 
-  override def addedBucket(bucket: collection.BagBucket[A]): mutable.TreeBag[A] = new mutable.TreeBag(contents.addedBucket(immutableBagConfiguration.bucketFrom(bucket)))
+  override def addedBucket(bucket: GenBagBucket[A]): mutable.TreeBag[A] = new mutable.TreeBag(contents.addedBucket(immutableBagConfiguration.bucketFrom(bucket)))
 
   override def getBucket(elem: A): Option[mutable.TreeBag[A]#BagBucket] = contents.getBucket(elem).map(bagConfiguration.bucketFrom)
 

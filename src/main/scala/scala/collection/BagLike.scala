@@ -85,7 +85,7 @@ trait BagLike[A, +This <: BagLike[A, This] with Bag[A]]
 
   def getBucket(elem: A): Option[BagBucket] = bucketsIterator.find(bucket => bagConfiguration.equiv(elem, bucket.sentinel))
 
-  def addedBucket(bucket: collection.BagBucket[A]): This = getBucket(bucket.sentinel) match {
+  def addedBucket(bucket: GenBagBucket[A]): This = getBucket(bucket.sentinel) match {
     case Some(bucket2) => updatedBucket(bagConfiguration.bucketFrom(bucket, bucket2))
     case None => updatedBucket(bagConfiguration.bucketFrom(bucket))
   }

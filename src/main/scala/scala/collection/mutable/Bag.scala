@@ -30,7 +30,7 @@ trait Bag[A]
     this
   }
 
-  def addBucket(bucket: collection.BagBucket[A]): this.type = {
+  def addBucket(bucket: GenBagBucket[A]): this.type = {
     this.getBucket(bucket.sentinel) match {
       case Some(b) => b addBucket bucket
       case None => updateBucket((bagConfiguration.newBuilder(bucket.sentinel) addBucket bucket).result())
