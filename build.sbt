@@ -1,8 +1,8 @@
 name := "multisets"
 
-version := "0.1"
+version := "0.2"
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.10.5"
 
 organization := "io.github.nicolasstucki"
 
