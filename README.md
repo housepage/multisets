@@ -47,5 +47,5 @@ bag(2)    --> Bag(8, 5, 2) // equivalent modulo 2
 
 Maven repository
 ----------------
-It is availabe on Maven Central [https://github.com/nicolasstucki/multisets/blob/master/MavenRepository.md]
+It is availabe on (Maven Central)[https://github.com/nicolasstucki/multisets/blob/master/MavenRepository.md]
 
